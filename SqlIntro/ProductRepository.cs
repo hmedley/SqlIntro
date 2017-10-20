@@ -21,20 +21,25 @@ namespace SqlIntro
         /// Reads all the products from the products table
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Product> GetProducts()
+     /*  public IEnumerable<Product> GetProducts()
         {
             using (var conn = new MySqlConnection(_connectionString))
             {
+                conn.Open();
                 var cmd = conn.CreateCommand();
-                cmd.CommandText = ""; //TODO:  Write a SELECT statement that gets all products
+                cmd.CommandText = "select name, ListPrice from product"; //TODO:  Write a SELECT statement that gets all products
                 var dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    yield return new Product { Name = dr["Name"].ToString() };
+                    yield return new Product
+                    {
+                        Name = dr["Name"].ToString(),
+                    ListPrice = (double)dr["ListPrice"]                       
+                    };
                 }
             }
         }
-
+        */
         /// <summary>
         /// Deletes a Product from the database
         /// </summary>
@@ -58,6 +63,7 @@ namespace SqlIntro
             //More on this in the future...  Nothing to do here..
             using (var conn = new MySqlConnection(_connectionString))
             {
+               
                 var cmd = conn.CreateCommand();
                 cmd.CommandText = "update product set name = @name where id = @id";
                 cmd.Parameters.AddWithValue("@name", prod.Name);
@@ -77,6 +83,24 @@ namespace SqlIntro
                 cmd.CommandText = "INSERT into product (name) values(@name)";
                 cmd.Parameters.AddWithValue("@name", prod.Name);
                 cmd.ExecuteNonQuery();
+            }
+        }
+        public IEnumerable<Product> GetProducts()
+        {
+            using (var conn = new MySqlConnection(_connectionString))
+            {
+                conn.Open();
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = "select name, ModifiedDate from product"; //TODO:  Write a SELECT statement that gets all products
+                var dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    yield return new Product
+                    {
+                        Name = dr["Name"].ToString(),
+                        ModifiedDate = (DateTime)dr["ModifiedDate"]
+                    };
+                }
             }
         }
     }
