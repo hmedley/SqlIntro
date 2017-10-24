@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ using MySql.Data.MySqlClient;
 
 namespace SqlIntro
 {
-    public class ProductRepository
+    public partial class ProductRepository
     {
         private readonly string _connectionString;
 
@@ -17,29 +18,35 @@ namespace SqlIntro
         {
             _connectionString = connectionString;
         }
+
+        internal IEnumerable<object> InsertProduct()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Reads all the products from the products table
         /// </summary>
         /// <returns></returns>
-     /*  public IEnumerable<Product> GetProducts()
-        {
-            using (var conn = new MySqlConnection(_connectionString))
-            {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "select name, ListPrice from product"; //TODO:  Write a SELECT statement that gets all products
-                var dr = cmd.ExecuteReader();
-                while (dr.Read())
-                {
-                    yield return new Product
-                    {
-                        Name = dr["Name"].ToString(),
-                    ListPrice = (double)dr["ListPrice"]                       
-                    };
-                }
-            }
-        }
-        */
+        /*  public IEnumerable<Product> GetProducts()
+           {
+               using (var conn = new MySqlConnection(_connectionString))
+               {
+                   conn.Open();
+                   var cmd = conn.CreateCommand();
+                   cmd.CommandText = "select name, ListPrice from product"; //TODO:  Write a SELECT statement that gets all products
+                   var dr = cmd.ExecuteReader();
+                   while (dr.Read())
+                   {
+                       yield return new Product
+                       {
+                           Name = dr["Name"].ToString(),
+                       ListPrice = (double)dr["ListPrice"]                       
+                       };
+                   }
+               }
+           }
+           */
         /// <summary>
         /// Deletes a Product from the database
         /// </summary>
@@ -48,8 +55,9 @@ namespace SqlIntro
         {
             using (var conn = new MySqlConnection(_connectionString))
             {
+                conn.Open();
                 var cmd = conn.CreateCommand();
-                cmd.CommandText = ""; //Write a delete statement that deletes by id
+                cmd.CommandText = "delete from product where productid = " + id; //Write a delete statement that deletes by id
                 cmd.ExecuteNonQuery();
             }
         }
@@ -63,9 +71,9 @@ namespace SqlIntro
             //More on this in the future...  Nothing to do here..
             using (var conn = new MySqlConnection(_connectionString))
             {
-               
+                conn.Open();
                 var cmd = conn.CreateCommand();
-                cmd.CommandText = "update product set name = @name where id = @id";
+                cmd.CommandText = "update product set name = @name where ProductID = @id";
                 cmd.Parameters.AddWithValue("@name", prod.Name);
                 cmd.Parameters.AddWithValue("@id", prod.Id);
                 cmd.ExecuteNonQuery();
@@ -79,6 +87,7 @@ namespace SqlIntro
         {
             using (var conn = new MySqlConnection(_connectionString))
             {
+                conn.Open();
                 var cmd = conn.CreateCommand();
                 cmd.CommandText = "INSERT into product (name) values(@name)";
                 cmd.Parameters.AddWithValue("@name", prod.Name);
