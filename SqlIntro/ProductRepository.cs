@@ -18,12 +18,6 @@ namespace SqlIntro
         {
             _connectionString = connectionString;
         }
-
-        internal IEnumerable<object> InsertProduct()
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Reads all the products from the products table
         /// </summary>
